@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>Scoped CSS Variables and JS</title>
 </head>
-<body>
+<body id="body">
   <h2>Update CSS Variables with <span class='hl'>JS</span></h2>
 
   <div class="controls">
@@ -26,9 +26,13 @@
       misc styles, nothing to do with CSS variables
     */
 
+    :root{
+      --base-color: #193549;
+    }
+
     body {
       text-align: center;
-      background: #193549;
+      background: var(--base-color);
       color: white;
       font-family: 'helvetica neue', sans-serif;
       font-weight: 100;
@@ -36,7 +40,11 @@
     }
 
     .controls {
-      margin-bottom: 50px;
+      margin-bottom: var(--margin-bottom);
+    }
+
+    img {
+      filter: blur(var(--blur));
     }
 
     input {
@@ -45,6 +53,39 @@
   </style>
 
   <script>
+    
+    function updateSpacing(e){
+      const cssSpacingVar = "--margin-bottom";
+      const targets = document.getElementsByClassName("controls");
+      const targetsArr = Array.from(targets);
+      targetsArr.forEach(element => {
+        element.style.setProperty(cssSpacingVar, this.value + 'px');
+      });
+    }
+
+    function updateBlur(e){
+      const cssBlur = "--blur";
+      const targets = document.getElementsByTagName("img");
+      const targetsArr = Array.from(targets);
+      targetsArr.forEach(element => {
+        element.style.setProperty(cssBlur, this.value + 'px');
+      });
+    }
+
+    function updateBaseColor(e){
+      const cssBaseColor = "--base-color";
+      const body = document.getElementById("body");
+      body.style.setProperty(cssBaseColor, this.value);
+    }
+
+    const spacingInput = document.getElementById("spacing");
+    spacingInput.addEventListener('click', updateSpacing);
+
+    const blurInput = document.getElementById("blur");
+    blurInput.addEventListener('click', updateBlur);
+
+    const baseColorInput = document.getElementById("base");
+    baseColorInput.addEventListener('click', updateBaseColor);
   </script>
 
 </body>
