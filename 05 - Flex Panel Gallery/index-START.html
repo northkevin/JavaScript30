@@ -26,6 +26,7 @@
     .panels {
       min-height: 100vh;
       overflow: hidden;
+      display: flex;
     }
 
     .panel {
@@ -43,6 +44,12 @@
       font-size: 20px;
       background-size: cover;
       background-position: center;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      /* border:1px solid rgba(226, 13, 13, 0.45); */
     }
 
     .panel1 { background-image:url(https://source.unsplash.com/gYl-UtwNg_I/1500x1500); }
@@ -56,6 +63,26 @@
       margin: 0;
       width: 100%;
       transition: transform 0.5s;
+      border:1px solid rgba(226, 13, 13, 0.45);
+      flex: 1 0 auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* this moves top panel downwards when toggled */ 
+    .panel > *:first-child {
+      transform: translateY(-100%);
+    }
+    .panel.open-active > *:first-child {
+      transform: translateY(0);
+    }
+    /* this moves bottom panel upwards when toggled */ 
+    .panel > *:last-child {
+      transform: translateY(100%);
+    }
+    .panel.open-active > *:last-child {
+      transform: translateY(0);
     }
 
     .panel p {
@@ -71,6 +98,8 @@
 
     .panel.open {
       font-size: 40px;
+      /* Use up to 5 times of the extra room in flexbox */
+      flex: 5;
     }
 
   </style>
@@ -105,7 +134,29 @@
   </div>
 
   <script>
+    function active(e){
+      console.log(e)
+      // console.log(e.getClass)
+      console.log("active")
+    }
 
+    function open(){
+      console.log("open")
+    }
+
+    function toggleOpen(){
+      this.classList.toggle('open')
+    }
+
+    function toggleOpenActive(e){
+      console.log("e.propertyName", e.propertyName)
+      if(e.propertyName.includes("flex")){
+        this.classList.toggle('open-active')
+      }
+    }
+     const panels = document.querySelectorAll('.panel')
+     panels.forEach(key => key.addEventListener('click', toggleOpen))
+     panels.forEach(key => key.addEventListener('transitionend', toggleOpenActive))
   </script>
 
 
