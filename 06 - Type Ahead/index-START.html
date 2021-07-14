@@ -8,15 +8,51 @@
 <body>
 
   <form class="search-form">
-    <input type="text" class="search" placeholder="City or State">
-    <ul class="suggestions">
+    <input id="searchFormInput" type="text" class="search" placeholder="City or State">
+    <ul id="suggestionsList", class="suggestions">
       <li>Filter for a city</li>
       <li>or a state</li>
     </ul>
   </form>
 <script>
 const endpoint = 'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
+let places = []
+fetch(endpoint)
+  .then(resp => resp.json())
+  .then(data => places.push(...data))
 
+function returnMatches(searchTerm, places){
+  return places
+    .filter(({city, state} = place) => {
+      const regex = new RegExp(searchTerm, 'gi')
+      console.log("city",city)
+      return city.match(regex) || state.match(regex)
+    })
+}
+
+function highlightedText(text, textToHighlight){
+  const regex = new RegExp(textToHighlight, 'gi')
+  return text.replace(regex, (match) => `<span class="hl">${match}</span>`)
+}
+
+function displayMatchingData(){
+  const matches = returnMatches(this.value, places)
+  const html = matches.map(({city, state} = match) => {
+    const cityName = highlightedText(city, this.value)
+    const stateName = highlightedText(state, this.value)
+    return `
+    <li>
+      <span class="name">${cityName}, ${stateName}</span>
+    </li>`
+  }).join("")
+  const suggestionsList = window.document.getElementById("suggestionsList")
+  suggestionsList.innerHTML = html
+}
+
+const input = window.document.getElementById("searchFormInput")
+input.addEventListener('change', displayMatchingData)
+input.addEventListener('keyup', displayMatchingData)
+  // .then(data => data)
 </script>
 </body>
 </html>
